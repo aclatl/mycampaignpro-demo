@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Georgia 2024 Election Results</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f8f9fb;
+    --border: #E4E7EC;
+    --border-light: #F0F1F4;
+    --text-primary: #1B2028;
+    --text-secondary: #4A5264;
+    --text-muted: #8B94A7;
+    --rep-red: #D32F2F;
+    --rep-red-bg: #FFEBEE;
+    --rep-red-light: #FFEBEE;
+    --dem-blue: #1976D2;
+    --dem-blue-bg: #E3F2FD;
+    --dem-blue-light: #E3F2FD;
+    --lib-gold: #E6A817;
+    --lib-gold-bg: #FFF8E1;
+    --green-party: #2E7D32;
+    --green-bg: #E8F5E9;
+    --accent-indigo: #5B5FC7;
+    --accent-indigo-bg: #EDEDFC;
+    --margin-rep: #D32F2F;
+    --margin-dem: #1976D2;
+    --expand-hover: #F0F1F4;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    background: var(--surface);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 20px;
+  }
+
+  /* Header */
+  .page-header {
+    margin-bottom: 24px;
+  }
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+  }
+  .page-header .subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  /* Controls bar */
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .control-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .control-group select {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 32px 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--text-primary);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%234A5264' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    min-width: 220px;
+    transition: border-color 0.15s;
+  }
+  .control-group select:hover { border-color: var(--accent-indigo); }
+  .control-group select:focus { outline: none; border-color: var(--accent-indigo); box-shadow: 0 0 0 3px var(--accent-indigo-bg); }
+
+  /* Summary cards */
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .summary-card {
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+  }
+  .summary-card .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .summary-card .stat-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+  }
+  .summary-card .stat-pct {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+  .stat-rep { color: var(--rep-red); }
+  .stat-dem { color: var(--dem-blue); }
+  .stat-lib { color: var(--lib-gold); }
+  .stat-grn { color: var(--green-party); }
+  .stat-total { color: var(--accent-indigo); }
+  .stat-margin-r { color: var(--rep-red); }
+  .stat-margin-d { color: var(--dem-blue); }
+
+  /* Table */
+  .table-wrapper {
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead th {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  thead th.num { text-align: right; }
+
+  /* County rows */
+  tbody tr.county-row {
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  tbody tr.county-row:hover { background: var(--expand-hover); }
+  tbody tr.county-row td { padding: 10px 14px; border-bottom: 1px solid var(--border-light); }
+  tbody tr.county-row td:first-child {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .expand-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-align: center;
+    line-height: 16px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-right: 8px;
+    transition: transform 0.2s, background 0.15s;
+    vertical-align: middle;
+  }
+  tr.county-row.expanded .expand-icon {
+    transform: rotate(90deg);
+    background: var(--accent-indigo-bg);
+    border-color: var(--accent-indigo);
+    color: var(--accent-indigo);
+  }
+
+  /* Precinct rows */
+  tr.precinct-row {
+    display: none;
+  }
+  tr.precinct-row.visible { display: table-row; }
+  tr.precinct-row td {
+    padding: 7px 14px 7px 48px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--surface);
+  }
+  tr.precinct-row td:first-child {
+    font-weight: 400;
+    color: var(--text-secondary);
+  }
+  tr.precinct-header td {
+    padding: 6px 14px 4px 48px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .precinct-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+
+  /* Number cells */
+  td.num {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+  }
+  tr.precinct-row td.num {
+    font-size: 12px;
+  }
+
+  /* Party-tinted cells */
+  .rep-cell { color: var(--rep-red); }
+  .dem-cell { color: var(--dem-blue); }
+  .lib-cell { color: var(--lib-gold); }
+  .grn-cell { color: var(--green-party); }
+
+  /* Margin pill */
+  .margin-pill {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .margin-pill.rep { background: var(--rep-red-light); color: var(--rep-red); }
+  .margin-pill.dem { background: var(--dem-blue-light); color: var(--dem-blue); }
+
+  /* Margin bar */
+  .margin-bar-cell {
+    width: 120px;
+    min-width: 120px;
+  }
+  .margin-bar-wrapper {
+    display: flex;
+    align-items: center;
+    height: 18px;
+    position: relative;
+  }
+  .margin-bar {
+    height: 6px;
+    border-radius: 3px;
+    position: absolute;
+  }
+  .margin-bar.rep { background: var(--rep-red); right: 50%; }
+  .margin-bar.dem { background: var(--dem-blue); left: 50%; }
+  .margin-bar-center {
+    position: absolute;
+    left: 50%;
+    top: 3px;
+    width: 1px;
+    height: 12px;
+    background: var(--border);
+  }
+
+  /* No results */
+  .no-results {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* Footer */
+  .table-footer {
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .container { padding: 16px 12px; }
+    .controls { flex-direction: column; }
+    .control-group select { min-width: 100%; }
+    .summary-row { grid-template-columns: repeat(2, 1fr); }
+    thead th, tbody td { padding: 8px 8px; font-size: 12px; }
+    td.num { font-size: 11px; }
+    tr.precinct-row td { padding-left: 28px; }
+    .margin-bar-cell { display: none; }
+    .page-header h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-header">
+    <h1>Georgia 2024 General Election Results</h1>
+    <div class="subtitle">Precinct-level results by race · Source: GA Secretary of State</div>
+  </div>
+
+  <div class="controls">
+    <div class="control-group">
+      <label>Race Category</label>
+      <select id="raceCategorySelect">
+        <option value="president">President</option>
+        <option value="congress">U.S. Congress</option>
+        <option value="state_senate">State Senate</option>
+        <option value="state_house">State House</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>District</label>
+      <select id="districtSelect">
+        <option value="all">Statewide</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="summary-row" id="summaryRow"></div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>County / Precinct</th>
+          <th class="num">GOP (R)</th>
+          <th class="num">DEM (D)</th>
+          <th class="num" id="thirdPartyHeader">LIB (L)</th>
+          <th class="num">Total</th>
+          <th class="num">Margin</th>
+          <th class="margin-bar-cell"></th>
+        </tr>
+      </thead>
+      <tbody id="resultsBody"></tbody>
+    </table>
+    <div class="table-footer">
+      <span id="countyCount"></span>
+      <span>Click a county row to expand precinct detail</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  MOCK DATA — Replace with Supabase fetch when ready
+//  Structure mirrors election_ga_2024_general_precinct table
+// ════════════════════════════════════════════════════════════════
+
+const MOCK_DATA = generateMockData();
+
+function generateMockData() {
+  const counties = [
+    { name: "FULTON", precincts: ["FC01","FC02","FC03","FC04","FC05","FC06","FC07","FC08"], lean: "D", pop: "large" },
+    { name: "GWINNETT", precincts: ["GW01","GW02","GW03","GW04","GW05","GW06","GW07"], lean: "D", pop: "large" },
+    { name: "COBB", precincts: ["CB01","CB02","CB03","CB04","CB05","CB06"], lean: "D", pop: "large" },
+    { name: "DEKALB", precincts: ["DK01","DK02","DK03","DK04","DK05","DK06"], lean: "D+", pop: "large" },
+    { name: "CHATHAM", precincts: ["CH01","CH02","CH03","CH04"], lean: "D", pop: "medium" },
+    { name: "RICHMOND", precincts: ["RC01","RC02","RC03","RC04"], lean: "D+", pop: "medium" },
+    { name: "MUSCOGEE", precincts: ["MU01","MU02","MU03"], lean: "D", pop: "medium" },
+    { name: "CHEROKEE", precincts: ["CK01","CK02","CK03","CK04","CK05"], lean: "R+", pop: "medium" },
+    { name: "FORSYTH", precincts: ["FO01","FO02","FO03","FO04"], lean: "R+", pop: "medium" },
+    { name: "HENRY", precincts: ["HN01","HN02","HN03","HN04"], lean: "D", pop: "medium" },
+    { name: "HALL", precincts: ["HL01","HL02","HL03"], lean: "R+", pop: "medium" },
+    { name: "WHITFIELD", precincts: ["WF01","WF02","WF03"], lean: "R+", pop: "small" },
+    { name: "CATOOSA", precincts: ["CA01","CA02","CA03"], lean: "R+", pop: "small" },
+    { name: "FLOYD", precincts: ["FL01","FL02","FL03"], lean: "R+", pop: "small" },
+    { name: "PAULDING", precincts: ["PL01","PL02","PL03","PL04"], lean: "R", pop: "medium" },
+    { name: "WALKER", precincts: ["WK01","WK02"], lean: "R+", pop: "small" },
+    { name: "BIBB", precincts: ["BB01","BB02","BB03"], lean: "D", pop: "medium" },
+    { name: "CLARKE", precincts: ["CL01","CL02","CL03"], lean: "D+", pop: "small" },
+    { name: "DOUGLAS", precincts: ["DG01","DG02","DG03"], lean: "D", pop: "medium" },
+    { name: "FAYETTE", precincts: ["FY01","FY02","FY03"], lean: "R", pop: "small" },
+    { name: "LOWNDES", precincts: ["LW01","LW02","LW03"], lean: "R", pop: "small" },
+    { name: "TROUP", precincts: ["TR01","TR02"], lean: "R", pop: "small" },
+    { name: "BARTOW", precincts: ["BT01","BT02","BT03"], lean: "R+", pop: "small" },
+    { name: "COLUMBIA", precincts: ["CM01","CM02","CM03","CM04"], lean: "R", pop: "medium" },
+  ];
+
+  // District assignments per county
+  const districtMap = {
+    "FULTON":    { cong: [5,6,13], ssen: [34,36,39,40,41,42], shouse: [55,56,57,58,59,60,61,62] },
+    "GWINNETT":  { cong: [4,7,9], ssen: [7,9,48], shouse: [95,96,97,98,99,100,101] },
+    "COBB":      { cong: [6,11,13], ssen: [32,33,37], shouse: [34,35,36,37,38,39] },
+    "DEKALB":    { cong: [4,5,13], ssen: [41,43,55], shouse: [78,79,80,81,82,83] },
+    "CHATHAM":   { cong: [1], ssen: [1,2], shouse: [162,163,164,165] },
+    "RICHMOND":  { cong: [12], ssen: [22,23], shouse: [126,127,128,129] },
+    "MUSCOGEE":  { cong: [2], ssen: [29], shouse: [131,132,133] },
+    "CHEROKEE":  { cong: [6,11], ssen: [21,56], shouse: [20,21,22,23,24] },
+    "FORSYTH":   { cong: [6,9], ssen: [27], shouse: [23,24,25,27] },
+    "HENRY":     { cong: [4,13], ssen: [10,17], shouse: [71,72,73,74] },
+    "HALL":      { cong: [9], ssen: [49], shouse: [24,25,26] },
+    "WHITFIELD": { cong: [14], ssen: [53], shouse: [2,3,4] },
+    "CATOOSA":   { cong: [14], ssen: [53], shouse: [2,3] },
+    "FLOYD":     { cong: [14], ssen: [52], shouse: [12,13,14] },
+    "PAULDING":  { cong: [11], ssen: [31], shouse: [15,16,17,19] },
+    "WALKER":    { cong: [14], ssen: [53], shouse: [1,2] },
+    "BIBB":      { cong: [2,8], ssen: [18,26], shouse: [140,141,142] },
+    "CLARKE":    { cong: [10], ssen: [46], shouse: [117,118,119] },
+    "DOUGLAS":   { cong: [13], ssen: [28], shouse: [64,65,66] },
+    "FAYETTE":   { cong: [3,13], ssen: [16,28], shouse: [68,69,71] },
+    "LOWNDES":   { cong: [8], ssen: [8], shouse: [173,174,175] },
+    "TROUP":     { cong: [3], ssen: [29], shouse: [133,134] },
+    "BARTOW":    { cong: [11,14], ssen: [52], shouse: [14,15,16] },
+    "COLUMBIA":  { cong: [10,12], ssen: [23,24], shouse: [123,124,125,126] },
+  };
+
+  // Generate precinct-level data
+  const rows = [];
+  for (const county of counties) {
+    const dm = districtMap[county.name];
+    for (const precinct of county.precincts) {
+      const base = county.pop === "large" ? rand(3000, 8000) : county.pop === "medium" ? rand(1500, 4000) : rand(500, 2000);
+      const leanFactor = county.lean === "D+" ? 0.3 : county.lean === "D" ? 0.45 : county.lean === "R" ? 0.55 : county.lean === "R+" ? 0.68 : 0.5;
+      const rPct = leanFactor + (Math.random() * 0.12 - 0.06);
+      const libPct = Math.random() * 0.025 + 0.005;
+      const grnPct = Math.random() * 0.008 + 0.002;
+      const dPct = 1 - rPct - libPct - grnPct;
+
+      const row = {
+        County: county.name,
+        Precinct: precinct,
+        // President
+        GA2024PRESR: Math.round(base * rPct),
+        GA2024PRESD: Math.round(base * dPct),
+        GA2024PRESL: Math.round(base * libPct),
+        GA2024PRESG: Math.round(base * grnPct),
+      };
+
+      // Congress — pick one district for this precinct
+      const congDist = dm.cong[Math.floor(Math.random() * dm.cong.length)];
+      row[`GA2024CONG${congDist}R`] = Math.round(base * (rPct + (Math.random() * 0.04 - 0.02)));
+      row[`GA2024CONG${congDist}D`] = Math.round(base * (dPct + (Math.random() * 0.04 - 0.02)));
+      row._congDist = congDist;
+
+      // State Senate
+      const ssenDist = dm.ssen[Math.floor(Math.random() * dm.ssen.length)];
+      row[`GA2024SSEN${ssenDist}R`] = Math.round(base * (rPct + (Math.random() * 0.06 - 0.03)));
+      row[`GA2024SSEN${ssenDist}D`] = Math.round(base * (dPct + (Math.random() * 0.06 - 0.03)));
+      row._ssenDist = ssenDist;
+
+      // State House
+      const shouseDist = dm.shouse[Math.floor(Math.random() * dm.shouse.length)];
+      row[`GA2024SHOUSE${shouseDist}R`] = Math.round(base * (rPct + (Math.random() * 0.08 - 0.04)));
+      row[`GA2024SHOUSE${shouseDist}D`] = Math.round(base * (dPct + (Math.random() * 0.08 - 0.04)));
+      row._shouseDist = shouseDist;
+
+      rows.push(row);
+    }
+  }
+  return rows;
+}
+
+function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+// ════════════════════════════════════════════════════════════════
+//  APP STATE & LOGIC
+// ════════════════════════════════════════════════════════════════
+
+const raceCategorySelect = document.getElementById('raceCategorySelect');
+const districtSelect = document.getElementById('districtSelect');
+const resultsBody = document.getElementById('resultsBody');
+const summaryRow = document.getElementById('summaryRow');
+const countyCountEl = document.getElementById('countyCount');
+const thirdPartyHeader = document.getElementById('thirdPartyHeader');
+
+let expandedCounties = new Set();
+
+function getDistrictsForCategory(category) {
+  const distNums = new Set();
+  for (const row of MOCK_DATA) {
+    if (category === 'congress') {
+      distNums.add(row._congDist);
+    } else if (category === 'state_senate') {
+      distNums.add(row._ssenDist);
+    } else if (category === 'state_house') {
+      distNums.add(row._shouseDist);
+    }
+  }
+  return [...distNums].sort((a,b) => a - b);
+}
+
+function updateDistrictDropdown() {
+  const cat = raceCategorySelect.value;
+  districtSelect.innerHTML = '';
+
+  if (cat === 'president') {
+    districtSelect.innerHTML = '<option value="all">Statewide</option>';
+    districtSelect.disabled = true;
+  } else {
+    districtSelect.disabled = false;
+    const label = cat === 'congress' ? 'District' : cat === 'state_senate' ? 'SD' : 'HD';
+    const districts = getDistrictsForCategory(cat);
+    districtSelect.innerHTML = '<option value="all">All Districts</option>' +
+      districts.map(d => `<option value="${d}">${label} ${d}</option>`).join('');
+  }
+}
+
+function getVotesForRow(row, category, district) {
+  let r = 0, d = 0, l = 0, g = 0;
+
+  if (category === 'president') {
+    r = row.GA2024PRESR || 0;
+    d = row.GA2024PRESD || 0;
+    l = row.GA2024PRESL || 0;
+    g = row.GA2024PRESG || 0;
+  } else if (category === 'congress') {
+    const dist = district !== 'all' ? parseInt(district) : row._congDist;
+    if (district !== 'all' && row._congDist !== dist) return null;
+    r = row[`GA2024CONG${dist}R`] || 0;
+    d = row[`GA2024CONG${dist}D`] || 0;
+  } else if (category === 'state_senate') {
+    const dist = district !== 'all' ? parseInt(district) : row._ssenDist;
+    if (district !== 'all' && row._ssenDist !== dist) return null;
+    r = row[`GA2024SSEN${dist}R`] || 0;
+    d = row[`GA2024SSEN${dist}D`] || 0;
+  } else if (category === 'state_house') {
+    const dist = district !== 'all' ? parseInt(district) : row._shouseDist;
+    if (district !== 'all' && row._shouseDist !== dist) return null;
+    r = row[`GA2024SHOUSE${dist}R`] || 0;
+    d = row[`GA2024SHOUSE${dist}D`] || 0;
+  }
+
+  const total = r + d + l + g;
+  return { r, d, l, g, total };
+}
+
+function fmt(n) { return n.toLocaleString(); }
+
+function marginPill(r, d) {
+  const diff = r - d;
+  const total = r + d;
+  if (total === 0) return '';
+  const pct = Math.abs(diff / total * 100).toFixed(1);
+  const party = diff > 0 ? 'rep' : 'dem';
+  const label = diff > 0 ? 'R' : 'D';
+  return `<span class="margin-pill ${party}">${label}+${pct}%</span>`;
+}
+
+function marginBar(r, d) {
+  const total = r + d;
+  if (total === 0) return '<div class="margin-bar-wrapper"><div class="margin-bar-center"></div></div>';
+  const pct = Math.abs(r - d) / total * 100;
+  const width = Math.min(pct, 50); // cap at 50% of bar width
+  const barPx = width;
+  if (r >= d) {
+    return `<div class="margin-bar-wrapper"><div class="margin-bar-center"></div><div class="margin-bar rep" style="width:${barPx}%;"></div></div>`;
+  } else {
+    return `<div class="margin-bar-wrapper"><div class="margin-bar-center"></div><div class="margin-bar dem" style="width:${barPx}%;"></div></div>`;
+  }
+}
+
+function renderSummary(countyData) {
+  const cat = raceCategorySelect.value;
+  const isPresident = cat === 'president';
+  let totalR = 0, totalD = 0, totalL = 0, totalG = 0;
+  for (const cd of Object.values(countyData)) {
+    totalR += cd.r;
+    totalD += cd.d;
+    totalL += cd.l;
+    totalG += cd.g;
+  }
+  const totalVotes = totalR + totalD + totalL + totalG;
+  const rPct = totalVotes > 0 ? (totalR / totalVotes * 100).toFixed(1) : '0.0';
+  const dPct = totalVotes > 0 ? (totalD / totalVotes * 100).toFixed(1) : '0.0';
+  const margin = totalR - totalD;
+  const marginPct = totalVotes > 0 ? Math.abs(margin / totalVotes * 100).toFixed(1) : '0.0';
+  const marginLabel = margin > 0 ? `R+${marginPct}%` : `D+${marginPct}%`;
+  const marginClass = margin > 0 ? 'stat-margin-r' : 'stat-margin-d';
+
+  let html = `
+    <div class="summary-card">
+      <div class="stat-label">Republican</div>
+      <div class="stat-value stat-rep">${fmt(totalR)}</div>
+      <div class="stat-pct">${rPct}%</div>
+    </div>
+    <div class="summary-card">
+      <div class="stat-label">Democrat</div>
+      <div class="stat-value stat-dem">${fmt(totalD)}</div>
+      <div class="stat-pct">${dPct}%</div>
+    </div>`;
+
+  if (isPresident) {
+    const lPct = totalVotes > 0 ? (totalL / totalVotes * 100).toFixed(1) : '0.0';
+    html += `
+    <div class="summary-card">
+      <div class="stat-label">Libertarian</div>
+      <div class="stat-value stat-lib">${fmt(totalL)}</div>
+      <div class="stat-pct">${lPct}%</div>
+    </div>`;
+  }
+
+  html += `
+    <div class="summary-card">
+      <div class="stat-label">Total Votes</div>
+      <div class="stat-value stat-total">${fmt(totalVotes)}</div>
+      <div class="stat-pct">${Object.keys(countyData).length} counties</div>
+    </div>
+    <div class="summary-card">
+      <div class="stat-label">Margin</div>
+      <div class="stat-value ${marginClass}">${marginLabel}</div>
+      <div class="stat-pct">${fmt(Math.abs(margin))} votes</div>
+    </div>`;
+
+  summaryRow.innerHTML = html;
+}
+
+function render() {
+  const cat = raceCategorySelect.value;
+  const dist = districtSelect.value;
+  const isPresident = cat === 'president';
+
+  // Update third party header
+  thirdPartyHeader.style.display = isPresident ? '' : 'none';
+
+  // Aggregate by county, keep precinct detail
+  const countyData = {}; // { COUNTY: { r, d, l, g, total, precincts: [{ name, r, d, l, g, total }] } }
+
+  for (const row of MOCK_DATA) {
+    const votes = getVotesForRow(row, cat, dist);
+    if (!votes) continue;
+
+    if (!countyData[row.County]) {
+      countyData[row.County] = { r: 0, d: 0, l: 0, g: 0, total: 0, precincts: [] };
+    }
+    const cd = countyData[row.County];
+    cd.r += votes.r;
+    cd.d += votes.d;
+    cd.l += votes.l;
+    cd.g += votes.g;
+    cd.total += votes.total;
+    cd.precincts.push({ name: row.Precinct, ...votes });
+  }
+
+  // Sort counties by total votes descending
+  const sortedCounties = Object.entries(countyData).sort((a, b) => b[1].total - a[1].total);
+
+  // Render summary
+  renderSummary(countyData);
+
+  // Build table
+  let html = '';
+  for (const [county, data] of sortedCounties) {
+    const isExpanded = expandedCounties.has(county);
+    const expandedClass = isExpanded ? ' expanded' : '';
+    const libCell = isPresident ? `<td class="num lib-cell">${fmt(data.l)}</td>` : '';
+
+    html += `<tr class="county-row${expandedClass}" data-county="${county}">
+      <td><span class="expand-icon">▸</span>${county}</td>
+      <td class="num rep-cell">${fmt(data.r)}</td>
+      <td class="num dem-cell">${fmt(data.d)}</td>
+      ${libCell}
+      <td class="num">${fmt(data.total)}</td>
+      <td class="num">${marginPill(data.r, data.d)}</td>
+      <td class="margin-bar-cell">${marginBar(data.r, data.d)}</td>
+    </tr>`;
+
+    // Precinct rows
+    if (isExpanded) {
+      // Sort precincts by total descending
+      const sortedPrecincts = data.precincts.sort((a, b) => b.total - a.total);
+      for (const p of sortedPrecincts) {
+        const pLibCell = isPresident ? `<td class="num lib-cell">${fmt(p.l)}</td>` : '';
+        html += `<tr class="precinct-row visible">
+          <td>${p.name}</td>
+          <td class="num rep-cell">${fmt(p.r)}</td>
+          <td class="num dem-cell">${fmt(p.d)}</td>
+          ${pLibCell}
+          <td class="num">${fmt(p.total)}</td>
+          <td class="num">${marginPill(p.r, p.d)}</td>
+          <td class="margin-bar-cell">${marginBar(p.r, p.d)}</td>
+        </tr>`;
+      }
+    }
+  }
+
+  if (sortedCounties.length === 0) {
+    const colSpan = isPresident ? 7 : 6;
+    html = `<tr><td colspan="${colSpan}" class="no-results">No results for this selection</td></tr>`;
+  }
+
+  resultsBody.innerHTML = html;
+  countyCountEl.textContent = `${sortedCounties.length} counties · ${MOCK_DATA.filter(r => getVotesForRow(r, cat, dist)).length} precincts`;
+
+  // Attach click handlers
+  document.querySelectorAll('.county-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const county = row.dataset.county;
+      if (expandedCounties.has(county)) {
+        expandedCounties.delete(county);
+      } else {
+        expandedCounties.add(county);
+      }
+      render();
+    });
+  });
+}
+
+// Event listeners
+raceCategorySelect.addEventListener('change', () => {
+  expandedCounties.clear();
+  updateDistrictDropdown();
+  render();
+});
+districtSelect.addEventListener('change', () => {
+  expandedCounties.clear();
+  render();
+});
+
+// Init
+updateDistrictDropdown();
+render();
+</script>
+
+</body>
+</html>
